@@ -43,13 +43,22 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Daily coffee intake").font(.headline)
                     //This plurals the word
-                    Stepper("^[\(coffeeAmount) cup](inflect: true) ", value: $coffeeAmount, in: 1...20)
+//                    Stepper("^[\(coffeeAmount) cup](inflect: true) ", value: $coffeeAmount, in: 1...20)
+                    Picker("^[\(coffeeAmount) cup](inflect: true) ", selection: $coffeeAmount){
+                        ForEach(1...20, id: \.self){
+                            Text("\($0)")
+                        }
+                    }
+                }
+                
+                Section{
+                    Text("Your ideal bed time is \(calBedTime())")
                 }
                 
             }
             .navigationTitle("BetterRest")
             .toolbar{
-                Button("Calculate", action: calBedTime)
+//                Button("Calculate", action: calBedTime)
             }
             .alert(alertTitle, isPresented: $showingAlert){
                 Button("OK") { }
@@ -60,7 +69,7 @@ struct ContentView: View {
         
     }
     
-    func calBedTime(){
+    func calBedTime() -> String{
         do {
             let config = MLModelConfiguration()
             let model = try SleepCalculator(configuration: config)
@@ -77,12 +86,14 @@ struct ContentView: View {
         
             alertTitle = "Your ideal bedtime is..."
             alertMessage = sleepTime.formatted(date: .omitted, time: .shortened)
+            return sleepTime.formatted(date: .omitted, time: .shortened)
         } catch {
             alertTitle = "Error"
             alertMessage = "Sorry, there was an error calculating your bedtime."
         }
         
-        showingAlert = true
+//        showingAlert = true
+        return ""
     }
 }
 
